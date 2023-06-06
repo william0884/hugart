@@ -1,6 +1,11 @@
 import { NextApiRequest, NextApiResponse } from "next";
 var MarkdownIt = require('markdown-it');
 import { HfInference } from '@huggingface/inference'
+import { blob } from "stream/consumers";
+import fs from "fs";
+import Jimp from "jimp";
+
+
 
 const hf = new HfInference(process.env.HF_ACCESS_TOKEN)
 
@@ -10,40 +15,6 @@ export interface Episode {
   name: string
   total_pages: number
   translated_languages: string[]
-}
-
-export type Texts = Text[]
-
-export interface Text {
-  type: string
-  tag: string
-  attrs: any
-  map?: number[]
-  nesting: number
-  level: number
-  children?: Children[]
-  content: string
-  markup: string
-  info: string
-  meta: any
-  block: boolean
-  hidden: boolean
-}
-
-export interface Children {
-  type: string
-  tag: string
-  attrs: any
-  map: any
-  nesting: number
-  level: number
-  children: any
-  content: string
-  markup: string
-  info: string
-  meta: any
-  block: boolean
-  hidden: boolean
 }
 
 export default async function handler(req: NextApiRequest, res:NextApiResponse) {
@@ -64,41 +35,95 @@ export default async function handler(req: NextApiRequest, res:NextApiResponse) 
 
     console.log(url)
 
-    const pcmd = 'https://peppercarrot.com/0_sources/' + random.name + '/lang/en/' + fields[0] + '_en_transcript.md'
+    // const gentxt = await hf.textGeneration({
+    //         model: 'gpt2',
+    //         inputs: removeBool
+    //     })
 
-    console.log(pcmd)
-    const fetmd = await fetch(pcmd);
-    const femd = await fetmd.text()
+    // const pepsum = await hf.summarization({
+    //         model: 'facebook/bart-large-cnn',
+    //         inputs: gentxt['generated_text'],
+    //         parameters: {
+    //         max_length: 100
+    //         }
+    //     })
+    const fimg = await fetch(url)
+    const fimgb = Buffer.from(await fimg.arrayBuffer())
 
-    var md = new MarkdownIt()
-    var mdparse:Texts = md.parse(femd, {})
-    const comicText: string[] = [];
 
-    for (var prop in mdparse) {
-    if (mdparse[prop]['type'] == 'inline') {
-        comicText.push(mdparse[prop]['content'])
-    }
-    }
 
-    const comicSlice = comicText.slice(25, -55)
-    const sliceJoin = comicSlice.join(' ')
-    const removeBool = sliceJoin.replaceAll("False", "").replaceAll("Whitespace (Optional)", "").replaceAll("True", "").replaceAll(/[0-9]/g, '').replaceAll('Concatenate', '').replaceAll('Position', '')
-    const gentxt = await hf.textGeneration({
-            model: 'gpt2',
-            inputs: removeBool
+      const imgCaping =  await hf.imageToText({
+          data: fimgb,
+          model: 'nlpconnect/vit-gpt2-image-captioning'
         })
+        console.log(imgCaping)
+    // const imgCreate = await hf.textToImage({
+    //   inputs: '80s anime ' + pepsum['summary_text'],
+    //   //model: 'ogkalu/Comic-Diffusion',
+    //   model: 'DucHaiten/DH_ClassicAnime'
+    // })
 
-    const pepsum = await hf.summarization({
-            model: 'facebook/bart-large-cnn',
-            inputs: gentxt['generated_text'],
-            parameters: {
-            max_length: 100
-            }
-        })
+    // console.log(gentxt)
 
-    console.log(gentxt)
 
-        res.status(200).json(pepsum);
+
+
+    const helloworld  = await hf.textToSpeech({
+      model: 'espnet/kan-bayashi_ljspeech_vits',
+      inputs: 'Hello world!'
+    })
+
+/* 
+  const arrayBuffer = await imgCreate.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+   fs.writeFileSync("test.png", buffer);
+
+   Jimp.read(buffer)
+   .then((lenna) => {
+     return lenna
+       .resize(256, 256) // resize
+       .quality(60) // set JPEG quality
+       .greyscale() // set greyscale
+       .write("lena-small-bw.jpg"); // save
+   })
+   .catch((err) => {
+     console.error(err);
+   });
+ */
+
+  //  const imgclas = await hf.imageToText({
+  //   data: buffer,
+  //   model: 'nlpconnect/vit-gpt2-image-captioning'
+  // })
+
+  const imgCap = await hf.textToImage({
+    inputs: '80s anime ' + imgCaping,
+    //model: 'ogkalu/Comic-Diffusion',
+    model: 'DucHaiten/DH_ClassicAnime'
+  })
+
+  const capBuffer = await imgCap.arrayBuffer();
+  const uffer = Buffer.from(capBuffer);
+   fs.writeFileSync("test-cap.png", uffer);
+
+   
+
+   const imgChange = await hf.imageToImage({
+    inputs: capBuffer, 
+    model: 'timbrooks/instruct-pix2pix',
+    parameters: {
+      prompt: 'convert to primary colors'
+    }
+  })
+
+  const aBuffer = await imgChange.arrayBuffer();
+  const buff = Buffer.from(aBuffer);
+   fs.writeFileSync("buff.png", buff);
+
+
+  
+
+        res.status(200).json('done');
 
     }
 
