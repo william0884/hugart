@@ -7,10 +7,6 @@ import { Amplify, Storage } from 'aws-amplify';
 import awsconfig from '../../aws-exports';
 Amplify.configure(awsconfig);
 
-export const config = {
-  runtime: 'edge',
-};
- 
 export default async function handler(req: NextApiRequest, res:NextApiResponse) {
 
     const output = req.body
@@ -61,20 +57,20 @@ export default async function handler(req: NextApiRequest, res:NextApiResponse) 
 
     const signedURL = await Storage.get(fileUrl);
 
-    const imgSpeech = await hf.imageToImage({
-        inputs: imgCap, 
-        model: 'timbrooks/instruct-pix2pix',
-        parameters: {
-          prompt: output.changes
-        }
-      })
+    // const imgSpeech = await hf.imageToImage({
+    //     inputs: imgCap, 
+    //     model: 'timbrooks/instruct-pix2pix',
+    //     parameters: {
+    //       prompt: output.changes
+    //     }
+    //   })
 
-    const speechBuffer = await imgSpeech.arrayBuffer();
+    // const speechBuffer = await imgSpeech.arrayBuffer();
     //const speechBuff = Buffer.from(speechBuffer);
-    const remixTime = output.changes + '-' + timestamp + ".png"
-    Storage.put(remixTime, speechBuffer, {contentType: "image/png"});
-    console.log(remixTime)
-    const remixURL = await Storage.get(remixTime);
+    // const remixTime = output.changes + '-' + timestamp + ".png"
+    // Storage.put(remixTime, speechBuffer, {contentType: "image/png"});
+    // console.log(remixTime)
+    // const remixURL = await Storage.get(remixTime);
     //res.send(signedURL)
-    res.status(200).json({'imageurl': signedURL, 'remixurl' : remixURL});
+    res.status(200).json({'imageurl': signedURL});
 }
