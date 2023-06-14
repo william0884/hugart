@@ -12,7 +12,7 @@ export default async function handler(req: NextApiRequest, res:NextApiResponse) 
     const output = req.body
 
     const randomChar = Math.random() * (826 - 1) + 1;
-    console.log(randomChar)
+    //console.log(randomChar)
     const char = await getCharacter(Math.floor(randomChar))
     //console.log(rick)
     const nameSpec = await hf.fillMask({
@@ -21,8 +21,8 @@ export default async function handler(req: NextApiRequest, res:NextApiResponse) 
       })
 
       
-    console.log(nameSpec.length)
-    console.log(nameSpec[Math.floor(Math.random() * (nameSpec.length - 1) + 1)])
+    //console.log(nameSpec.length)
+    //console.log(nameSpec[Math.floor(Math.random() * (nameSpec.length - 1) + 1)])
     
     const sentence = char.data.name + ' the ' + char.data.gender + ' ' + char.data.species + ' from ' + char.data.location.name + ' is ' + char.data.status + '.'
     
@@ -53,7 +53,7 @@ export default async function handler(req: NextApiRequest, res:NextApiResponse) 
     const fileUrl = output.input + '-' + timestamp + ".png"
     
     Storage.put(fileUrl, aBuffer, {contentType: "image/png"});
-    console.log(fileUrl)
+    //console.log(fileUrl)
 
     const signedURL = await Storage.get(fileUrl);
 
