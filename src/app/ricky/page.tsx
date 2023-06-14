@@ -9,7 +9,6 @@ export default function Ricky() {
     <form className="bg-gray-700 pl-0 shadow-md rounded px-8 pt-6 pb-8 mb-4" action="/api/hugmorty" method="post">
     <div className="mb-4"></div>
     <h1 className="block border-2 text-center text-white text-sm font-bold mb-2">HugArt</h1>
-    <p>What art style?</p>
 
     <label className="block text-white text-sm font-bold mb-2" htmlFor="input">What style:</label>
 

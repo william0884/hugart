@@ -21,7 +21,6 @@ export default async function handler(req: NextApiRequest, res:NextApiResponse) 
     const pepcar = (await fetch('https://peppercarrot.com/0_sources/episodes.json'));
     const jsonData:Episodes = await pepcar.json();
 
-    console.log(jsonData)
     const random:Episode = jsonData[Math.floor(Math.random()*jsonData.length)];
 
     console.log(random.name)
@@ -104,7 +103,7 @@ export default async function handler(req: NextApiRequest, res:NextApiResponse) 
 
   const capBuffer = await imgCap.arrayBuffer();
   const uffer = Buffer.from(capBuffer);
-   fs.writeFileSync("test-cap.png", uffer);
+   //fs.writeFileSync("test-cap.png", uffer);
 
    
 
@@ -118,7 +117,7 @@ export default async function handler(req: NextApiRequest, res:NextApiResponse) 
 
   const aBuffer = await imgChange.arrayBuffer();
   const buff = Buffer.from(aBuffer);
-   fs.writeFileSync("buff.png", buff);
+   //fs.writeFileSync("buff.png", buff);
 
 
   

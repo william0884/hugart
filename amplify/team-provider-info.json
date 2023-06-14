@@ -10,6 +10,14 @@
       "StackName": "amplify-ahug-dev-125838",
       "StackId": "arn:aws:cloudformation:ap-southeast-2:026815525014:stack/amplify-ahug-dev-125838/712db8e0-04ce-11ee-87db-02152a3b01e2",
       "AmplifyAppId": "d3eb3nglxndrnp"
+    },
+    "categories": {
+      "auth": {
+        "ahug7bffb569": {}
+      },
+      "storage": {
+        "imgstore": {}
+      }
     }
   }
 }

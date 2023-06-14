@@ -2,16 +2,11 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { HfInference } from '@huggingface/inference'
 const hf = new HfInference(process.env.HF_ACCESS_TOKEN)
 import { getCharacter  } from 'rickmortyapi'
-import fs from "fs";
 
-async function extendAgain(sentence:string){
-    const charExtend = await hf.textGeneration ({
-        inputs: sentence,
-        model: 'gpt2'
-    })
-    return charExtend
+import { Amplify, Storage } from 'aws-amplify';
+import awsconfig from '../../aws-exports';
+Amplify.configure(awsconfig);
 
-}
 
 export default async function handler(req: NextApiRequest, res:NextApiResponse) {
 
@@ -52,11 +47,18 @@ export default async function handler(req: NextApiRequest, res:NextApiResponse) 
         model: 'DucHaiten/DH_ClassicAnime'
       })
 
-      const aBuffer = await imgCap.arrayBuffer();
-      const buff = Buffer.from(aBuffer);
-      fs.writeFileSync("buffing.png", buff);
+    const aBuffer = await imgCap.arrayBuffer();
+    //const buff = Buffer.from(aBuffer);
 
-      const imgSpeech = await hf.imageToImage({
+    const timestamp = Number(new Date()); 
+    const fileUrl = output.input + '-' + timestamp + ".png"
+    
+    Storage.put(fileUrl, aBuffer, {contentType: "image/png"});
+    console.log(fileUrl)
+
+    const signedURL = await Storage.get(fileUrl);
+
+    const imgSpeech = await hf.imageToImage({
         inputs: imgCap, 
         model: 'timbrooks/instruct-pix2pix',
         parameters: {
@@ -64,16 +66,12 @@ export default async function handler(req: NextApiRequest, res:NextApiResponse) 
         }
       })
 
-      const speechBuffer = await imgSpeech.arrayBuffer();
-      const speechBuff = Buffer.from(speechBuffer);
-      fs.writeFileSync("speech.png", speechBuff);
-
-
-
-    console.log(sentence)
-    console.log(charExtend.generated_text)
-
-
-    console.log(imgclas)
-    res.status(200).json(charExtend.generated_text);
+    const speechBuffer = await imgSpeech.arrayBuffer();
+    //const speechBuff = Buffer.from(speechBuffer);
+    const remixTime = output.changes + '-' + timestamp + ".png"
+    Storage.put(remixTime, speechBuffer, {contentType: "image/png"});
+    console.log(remixTime)
+    const remixURL = await Storage.get(remixTime);
+    //res.send(signedURL)
+    res.status(200).json({'imageurl': signedURL, 'remixurl' : remixURL});
 }
