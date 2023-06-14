@@ -7,7 +7,10 @@ import { Amplify, Storage } from 'aws-amplify';
 import awsconfig from '../../aws-exports';
 Amplify.configure(awsconfig);
 
-
+export const config = {
+  runtime: 'edge',
+};
+ 
 export default async function handler(req: NextApiRequest, res:NextApiResponse) {
 
     const output = req.body
