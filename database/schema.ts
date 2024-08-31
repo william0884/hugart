@@ -9,6 +9,7 @@ export const characterTable = pgTable("char_table", {
 
 export const generatedTable = pgTable("char_gen", {
   id: serial("id").primaryKey(),
+  sentence: text("sentence").notNull(),
   url: text("url").notNull(),
   charId: integer("char_id").references(() => characterTable.id),
 });

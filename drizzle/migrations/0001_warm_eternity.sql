@@ -1,0 +1,1 @@
+ALTER TABLE "char_gen" ADD COLUMN "sentence" text NOT NULL;

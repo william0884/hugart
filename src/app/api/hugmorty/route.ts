@@ -4,7 +4,7 @@ import { drizzle } from "drizzle-orm/neon-http";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
-import { characterTable } from "../../../../database/schema";
+import { characterTable, generatedTable } from "../../../../database/schema";
 import { put } from "@vercel/blob";
 
 const sql = neon(process.env.DATABASE_URL!);
@@ -17,7 +17,13 @@ export interface Episode {
   total_pages: number;
   translated_languages: string[];
 }
-
+interface BlobResponse {
+  url: string;
+  downloadUrl: string;
+  pathname: string;
+  contentType?: string;
+  contentDisposition?: string;
+}
 const hf = new HfInference(process.env.HF_ACCESS_TOKEN);
 
 export async function GET(request: Request): Promise<NextResponse> {
@@ -73,7 +79,11 @@ export async function GET(request: Request): Promise<NextResponse> {
     //console.log("fileBlob type:", imgCap instanceof Blob);
     // Generate a unique file name
     const fileName = `${Date.now()}.png`;
-    const blob = await put(fileName, buff, {
+    //const blob = await put(fileName, buff, {
+    //  access: "public",
+    //});
+
+    const blob: BlobResponse = await put(fileName, buff, {
       access: "public",
     });
 
@@ -83,6 +93,12 @@ export async function GET(request: Request): Promise<NextResponse> {
     //  data: imgBuffer,
     //  model: "nlpconnect/vit-gpt2-image-captioning",
     // });
+    //
+    await db.insert(generatedTable).values({
+      sentence: sentence + " " + imgdescribe + " " + results,
+      url: blob.url,
+      charId: id,
+    });
 
     return NextResponse.json({
       "generated text": imgclas.generated_text,
