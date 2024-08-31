@@ -1,0 +1,1 @@
+ALTER TABLE "char_gen" ADD COLUMN "imgdescribe" text NOT NULL;

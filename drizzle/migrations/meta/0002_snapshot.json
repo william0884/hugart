@@ -1,0 +1,104 @@
+{
+  "id": "8fcfd5a3-efe4-4abe-86d3-f671fe1754e7",
+  "prevId": "badea572-8854-43e6-8fdf-02419aa54a5e",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.char_table": {
+      "name": "char_table",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "sentence": {
+          "name": "sentence",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "url": {
+          "name": "url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "imgdescribe": {
+          "name": "imgdescribe",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.char_gen": {
+      "name": "char_gen",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "sentence": {
+          "name": "sentence",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "url": {
+          "name": "url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "imgdescribe": {
+          "name": "imgdescribe",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "char_id": {
+          "name": "char_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "char_gen_char_id_char_table_id_fk": {
+          "name": "char_gen_char_id_char_table_id_fk",
+          "tableFrom": "char_gen",
+          "tableTo": "char_table",
+          "columnsFrom": [
+            "char_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

@@ -26,7 +26,7 @@ interface BlobResponse {
 }
 const hf = new HfInference(process.env.HF_ACCESS_TOKEN);
 
-export async function GET(request: Request): Promise<NextResponse> {
+export async function POST(request: Request): Promise<NextResponse> {
   try {
     const pepcar = await fetch(
       "https://peppercarrot.com/0_sources/episodes.json",
@@ -40,7 +40,6 @@ export async function GET(request: Request): Promise<NextResponse> {
     const fields = random.name.split("_");
     const results = fields[1].replace(/[-]/g, " ");
 
-    //const result = await db.select().from(characterTable);
     const randomChar = Math.floor(Math.random() * 823) + 1;
     console.log(randomChar);
     const result = await db
@@ -50,60 +49,39 @@ export async function GET(request: Request): Promise<NextResponse> {
     const item = result[0];
     const { id, sentence, url, imgdescribe } = item;
 
-    //const imgCap = await hf.textToImage({
-    //  inputs: "this is a black cat outside",
-    //  model: "black-forest-labs/FLUX.1-dev",
-    //});
-
     const imgCap = await hf.textToImage({
       inputs: sentence + " " + imgdescribe + " " + results,
-      model: "stabilityai/stable-diffusion-2", // Replace with your preferred text-to-image model
+      model: "black-forest-labs/FLUX.1-schnell",
     });
 
-    // Convert the response to a buffer
     const buff = Buffer.from(await imgCap.arrayBuffer());
 
     const arrayBuffer = await imgCap.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
 
     const imgclas = await hf.imageToText({
       data: imgCap,
       model: "nlpconnect/vit-gpt2-image-captioning",
     });
+    console.log(imgclas);
 
-    //console.log("This image:", imgCap);
-
-    //const imgBlob = new Blob([await imgCap.arrayBuffer()], {
-    //  type: "image/png",
-    //});
-    //console.log("fileBlob type:", imgCap instanceof Blob);
-    // Generate a unique file name
     const fileName = `${Date.now()}.png`;
-    //const blob = await put(fileName, buff, {
-    //  access: "public",
-    //});
 
     const blob: BlobResponse = await put(fileName, buff, {
       access: "public",
     });
 
-    //const { url } = await put(fileName, imgCap, { access: "public" });
-
-    //const imgText = await hf.imageToText({
-    //  data: imgBuffer,
-    //  model: "nlpconnect/vit-gpt2-image-captioning",
-    // });
-    //
     await db.insert(generatedTable).values({
       sentence: sentence + " " + imgdescribe + " " + results,
       url: blob.url,
+      imgdescribe: imgclas.generated_text,
       charId: id,
     });
 
     return NextResponse.json({
-      "generated text": imgclas.generated_text,
-      image: blob,
-      pepperEpisode: results,
+      sentence: sentence + " " + imgdescribe + " " + results,
+      url: blob.url,
+      imgdescribe: imgclas.generated_text,
+      charId: id,
     });
   } catch (error) {
     return NextResponse.json(
