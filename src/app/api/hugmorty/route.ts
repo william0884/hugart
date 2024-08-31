@@ -3,8 +3,7 @@ import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
-const fs = require("fs");
-//import { fs } from "fs";
+
 import { characterTable } from "../../../../database/schema";
 import { put } from "@vercel/blob";
 
@@ -51,15 +50,12 @@ export async function GET(request: Request): Promise<NextResponse> {
     //});
 
     const imgCap = await hf.textToImage({
-      inputs: imgdescribe,
+      inputs: sentence + " " + imgdescribe + " " + results,
       model: "stabilityai/stable-diffusion-2", // Replace with your preferred text-to-image model
     });
 
     // Convert the response to a buffer
     const buff = Buffer.from(await imgCap.arrayBuffer());
-
-    // Save the image buffer to disk
-    fs.writeFileSync("output.png", buff);
 
     const arrayBuffer = await imgCap.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
@@ -77,6 +73,9 @@ export async function GET(request: Request): Promise<NextResponse> {
     //console.log("fileBlob type:", imgCap instanceof Blob);
     // Generate a unique file name
     const fileName = `${Date.now()}.png`;
+    const blob = await put(fileName, buff, {
+      access: "public",
+    });
 
     //const { url } = await put(fileName, imgCap, { access: "public" });
 
@@ -85,7 +84,11 @@ export async function GET(request: Request): Promise<NextResponse> {
     //  model: "nlpconnect/vit-gpt2-image-captioning",
     // });
 
-    return NextResponse.json(imgclas.generated_text);
+    return NextResponse.json({
+      "generated text": imgclas.generated_text,
+      image: blob,
+      pepperEpisode: results,
+    });
   } catch (error) {
     return NextResponse.json(
       { error: "Failed to upload file again", details: error.message },
