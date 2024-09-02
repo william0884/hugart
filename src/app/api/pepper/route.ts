@@ -20,21 +20,6 @@ export async function GET() {
     const fields = random.name.split("_");
     const result = fields[1].replace(/[-]/g, " ");
 
-    const numb = fields[0].toUpperCase();
-    const numbRemov = numb.replace("P", "");
-
-    const ranPage = Math.trunc(Math.random() * (random.total_pages - 1) + 1);
-
-    const url =
-      "https://peppercarrot.com/0_sources/" +
-      random.name +
-      "/low-res/en_Pepper-and-Carrot_by-David-Revoy_" +
-      numbRemov +
-      "P0" +
-      ranPage +
-      ".jpg";
-
-    console.log(url);
     return new Response(JSON.stringify({ Name: result }), { status: 200 });
   } catch (error) {
     console.error("Error getting image:", error);
