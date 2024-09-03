@@ -7,6 +7,7 @@ import {
   SignedOut,
   UserButton,
 } from "@clerk/nextjs";
+import Navbar from "./_components/navbar";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
@@ -23,12 +24,7 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body>
-          <SignedOut>
-            <SignInButton />
-          </SignedOut>
-          <SignedIn>
-            <UserButton />
-          </SignedIn>
+          <Navbar />
           {children}
         </body>
       </html>

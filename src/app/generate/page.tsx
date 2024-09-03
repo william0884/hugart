@@ -101,27 +101,7 @@ const Page = () => {
         </div>
       )}
 
-      {/* Form to submit additional input with the image URL */}
-      <form onSubmit={handleFormSubmit} className="mt-6">
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">
-            Additional Input
-          </label>
-          <input
-            type="text"
-            value={formValue}
-            onChange={handleInputChange}
-            className="mt-1 p-2 border border-gray-300 rounded w-full"
-            required
-          />
-        </div>
-        <button
-          type="submit"
-          className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600"
-        >
-          Submit
-        </button>
-      </form>
+     
     </div>
   );
 };
