@@ -13,4 +13,5 @@ export const generatedTable = pgTable("char_gen", {
   url: text("url").notNull(),
   imgdescribe: text("imgdescribe").notNull(),
   charId: integer("char_id").references(() => characterTable.id),
+  userId: text("user_id").notNull(),
 });

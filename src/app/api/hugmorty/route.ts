@@ -3,9 +3,9 @@ import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
-
 import { characterTable, generatedTable } from "../../../../database/schema";
 import { put } from "@vercel/blob";
+import { auth } from '@clerk/nextjs/server'
 
 const sql = neon(process.env.DATABASE_URL!);
 const db = drizzle(sql);
@@ -28,6 +28,8 @@ const hf = new HfInference(process.env.HF_ACCESS_TOKEN);
 
 export async function POST(request: Request): Promise<NextResponse> {
   try {
+    const { userId } = auth()
+
     const pepcar = await fetch(
       "https://peppercarrot.com/0_sources/episodes.json",
     );
@@ -70,15 +72,22 @@ export async function POST(request: Request): Promise<NextResponse> {
       access: "public",
     });
 
+    if (!userId) {
+      return new NextResponse('Unauthorized', { status: 401 })
+    }
+
     await db.insert(generatedTable).values({
+      userId: userId,
       sentence: sentence + " " + imgdescribe + " " + results,
       url: blob.url,
       imgdescribe: imgclas.generated_text,
       charId: id,
+      
     });
 
     return NextResponse.json({
       sentence: sentence + " " + imgdescribe + " " + results,
+      userId: userId,
       url: blob.url,
       imgdescribe: imgclas.generated_text,
       charId: id,

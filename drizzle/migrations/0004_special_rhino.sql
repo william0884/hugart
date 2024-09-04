@@ -1,0 +1,1 @@
+ALTER TABLE "char_gen" ALTER COLUMN "user_id" SET DATA TYPE text;

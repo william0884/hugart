@@ -22,6 +22,20 @@
       "when": 1725087218668,
       "tag": "0002_absurd_iron_man",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1725441959322,
+      "tag": "0003_boring_carnage",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1725443096903,
+      "tag": "0004_special_rhino",
+      "breakpoints": true
     }
   ]
 }

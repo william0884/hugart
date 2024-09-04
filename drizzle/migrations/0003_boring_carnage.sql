@@ -1,0 +1,1 @@
+ALTER TABLE "char_gen" ADD COLUMN "user_id" integer NOT NULL;
