@@ -30,9 +30,9 @@ async function performImageToImage(
     const response = await hf.imageToImage({
       model: "timbrooks/instruct-pix2pix",
       inputs: inputImageBlob,
-      options: { wait_for_model: true },
       parameters: {
         prompt: prompt,
+        //wait_for_model: true,
       },
     });
 
