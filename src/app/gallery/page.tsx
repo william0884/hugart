@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Link from 'next/link';
 export const dynamic = 'force-dynamic';
 
 const Page = () => {
@@ -51,12 +52,14 @@ const Page = () => {
             <strong className="text-lg font-semibold">Image Describe:</strong>{" "}
             <p className="mb-2 text-gray-700">{item.imgdescribe}</p>
             {item.url ? (
-              <img
-                src={getImageUrl(item.url)}
-                alt={`Generated image for ID: ${item.id}`}
-                className="mt-2 mb-2 rounded-lg border border-gray-300"
-                width={480}
-              />
+              <Link href={`/gallery/${item.id}`} passHref>
+                <img
+                  src={getImageUrl(item.url)}
+                  alt={`Generated image for ID: ${item.id}`}
+                  className="mt-2 mb-2 rounded-lg border border-gray-300 cursor-pointer"
+                  width={480}
+                />
+              </Link>
             ) : (
               <p className="text-gray-500">No image available</p>
             )}
