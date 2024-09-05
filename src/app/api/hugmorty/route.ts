@@ -93,8 +93,9 @@ export async function POST(request: Request): Promise<NextResponse> {
       charId: id,
     });
   } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json(
-      { error: "Failed to upload file again", details: error.message },
+      { error: "Failed to upload file again", details: errorMessage },
       { status: 500 },
     );
   }

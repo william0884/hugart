@@ -125,9 +125,9 @@ export async function POST(request: NextRequest) {
       imageUrl: uploadedImageUrl,
     });
   } catch (error) {
-    console.error("Error handling POST request:", error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json(
-      { error: "Failed to submit data.", details: error.message },
+      { error: "Failed to upload file again", details: errorMessage },
       { status: 500 },
     );
   }
