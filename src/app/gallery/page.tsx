@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from 'next/link';
+import Image from 'next/image';
 export const dynamic = 'force-dynamic';
 
 const Page = () => {
@@ -39,36 +40,41 @@ const Page = () => {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6 text-center">Gallery</h1>
-      <ul className="space-y-6">
-        {data.map((item) => (
-          <li
-            key={item.id}
-            className="p-4 bg-white border rounded-lg shadow-md flex flex-col items-start"
-          >
-            <strong className="text-lg font-semibold">Sentence:</strong>{" "}
-            <p className="mb-2 text-gray-700">{item.sentence}</p>
-            <strong className="text-lg font-semibold">Image Describe:</strong>{" "}
-            <p className="mb-2 text-gray-700">{item.imgdescribe}</p>
-            {item.url ? (
-              <Link href={`/gallery/${item.id}`} passHref>
-                <img
-                  src={getImageUrl(item.url)}
-                  alt={`Generated image for ID: ${item.id}`}
-                  className="mt-2 mb-2 rounded-lg border border-gray-300 cursor-pointer"
-                  width={480}
-                />
-              </Link>
-            ) : (
-              <p className="text-gray-500">No image available</p>
-            )}
-            <strong className="text-lg font-semibold">Character ID:</strong>{" "}
-            <p className="text-gray-700">{item.charId}</p>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#4b0082] to-[#690060] text-white">
+      <div className="container flex flex-col items-center justify-center gap-6 px-4 text-center">
+        <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
+          Gallery
+        </h1>
+          <ul className="space-y-6">
+          {data.map((item) => (
+            <li
+              key={item.id}
+              className="p-4 bg-gray-700 border rounded-lg shadow-md flex flex-col items-start"
+            >
+              <strong className="text-lg font-semibold">Sentence:</strong>{" "}
+              <p className="mb-2 text-white">{item.sentence}</p>
+              <strong className="text-lg font-semibold">Image Describe:</strong>{" "}
+              <p className="mb-2 text-white">{item.imgdescribe}</p>
+              {item.url ? (
+                <Link href={`/gallery/${item.id}`} passHref>
+                  <Image
+                    src={getImageUrl(item.url)}
+                    alt={`Generated image for ID: ${item.id}`}
+                    width={480}
+                    height={480}
+                    className="mt-2 mb-2 rounded-lg border border-gray-300 cursor-pointer"
+                  />
+                </Link>
+              ) : (
+                <p className="text-gray-500">No image available</p>
+              )}
+              <strong className="text-lg font-semibold">Character ID:</strong>{" "}
+              <p className="text-white">{item.charId}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </main>
   );
 };
 

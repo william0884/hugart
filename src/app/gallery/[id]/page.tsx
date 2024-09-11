@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const ImagePage = () => {
   const { id } = useParams();
@@ -33,15 +34,18 @@ const ImagePage = () => {
   if (!item) return <p>Item not found</p>;
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
+    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#4b0082] to-[#690060] text-white">
+    <div className="container flex flex-col items-center justify-center gap-6 px-4 text-center">
       <Link href="/gallery" className="text-blue-500 hover:underline mb-4 block">
         &larr; Back to Gallery
       </Link>
       <h1 className="text-3xl font-bold mb-6">Image Details</h1>
-      <div className="bg-white border rounded-lg shadow-md p-6">
-        <img
+      <div className="bg-gray-700 border rounded-lg shadow-md p-6">
+        <Image
           src={item.url}
           alt={`Generated image for ID: ${item.id}`}
+          width={800}
+          height={600}
           className="w-full mb-4 rounded-lg border border-gray-300"
         />
         <p className="mb-2"><strong>Sentence:</strong> {item.sentence}</p>
@@ -49,6 +53,7 @@ const ImagePage = () => {
         <p><strong>Character ID:</strong> {item.charId}</p>
       </div>
     </div>
+    </main>
   );
 };
 

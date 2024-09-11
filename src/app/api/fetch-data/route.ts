@@ -29,7 +29,6 @@ export async function GET(req: NextRequest) {
       }
   });
   } catch (err) {
-    console.error("Error fetching data:", err);
     return new NextResponse("Failed discoto fetch data", { status: 500 });
   }
 }
