@@ -40,7 +40,7 @@ export default function Home() {
           className="max-w-full h-auto"
         />
 
-        <p className='text-white text-xl'>Created with data from<a className='text-blue-300' href="https://rickandmortyapi.com/">Rick and Morty API</a></p>
+        <p className='text-white text-xl'>Created with data from <a className='text-blue-300' href="https://rickandmortyapi.com/">Rick and Morty API</a></p>
       </div>
     </main>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from 'next/image';
 
 const Page = () => {
   const [responseData, setResponseData] = useState<any>(null);
@@ -10,7 +11,6 @@ const Page = () => {
   const [usedImages, setUsedImages] = useState<string[]>([]);
   const [formValue, setFormValue] = useState<string>("");
 
-  // Function to handle the POST request to fetch data
   const handleButtonClick = async () => {
     setLoading(true);
     setError(null);
@@ -22,7 +22,7 @@ const Page = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({}), // Add any required data here
+        body: JSON.stringify({}),
       });
 
       if (!response.ok) {
@@ -77,32 +77,33 @@ const Page = () => {
   };
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">HugMorty API Example</h1>
-      <button
-        onClick={handleButtonClick}
-        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        disabled={loading}
-      >
-        {loading ? "Loading..." : "Fetch Data"}
-      </button>
-      {error && <p className="mt-4 text-red-500">{error}</p>}
-      {responseData && (
-        <div className="mt-4 p-4 bg-gray-100 rounded">
-          <pre className="whitespace-pre-wrap">
-            {JSON.stringify(responseData, null, 2)}
-          </pre>
-          <img
-            src={responseData.url}
-            width={500}
-            height={500}
-            alt="Generated Image"
-          />
-        </div>
-      )}
-
-     
-    </div>
+    <main className="flex min-h-screen flex-col bg-gradient-to-b from-[#4b0082] to-[#690060] text-white">
+      <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
+        <button
+          onClick={handleButtonClick}
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-blue-300"
+          disabled={loading}
+        >
+          {loading ? "Loading..." : "Generate"}
+        </button>
+        {error && <p className="mt-4 text-red-500">{error}</p>}
+        {responseData && (
+          <div className="mt-4 p-4 bg-gray-800 rounded">
+            <Image
+              src={responseData.url}
+              width={500}
+              height={500}
+              alt="Generated Image"
+              className="max-w-full h-auto"
+            />
+            <p className='text-white'>Here is the generated image! It is added to Gallery. Now generate another!</p>
+            <pre className="whitespace-pre-wrap">
+              {JSON.stringify(responseData, null, 2)}
+            </pre>
+          </div>
+        )}
+      </div>
+    </main>
   );
 };
 
