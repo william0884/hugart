@@ -30,7 +30,7 @@ export default function Home() {
           Hugart
         </h1>
 
-        <p className='text-white text-2xl'>Generate AI images with a Rick and Morty infuence.</p>
+        <p className='text-white text-2xl'>Generate AI images with a Rick and Morty influence.</p>
         <p className='text-white text-xl'>Some examples we prepared eariler:</p>
         <Image
           src={images[currentImageIndex]!}
