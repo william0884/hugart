@@ -6,10 +6,10 @@ import Image from 'next/image';
 
 export default function Home() {
   const images = [
-    'https://dc907dsvybtiecmv.public.blob.vercel-storage.com/1725443352273-JAU55cUfBAid2dP70rDmCbSvKkj9Vp.png',
+    'https://hugart.s3.ap-southeast-2.amazonaws.com/1728913522174.png?t=1728913935675&w=1080&q=75',
     // Add more image URLs here
-    'https://dc907dsvybtiecmv.public.blob.vercel-storage.com/1725443753426-oft5VdozvFNKlBd4EK2FVz5AUmXUSI.png',
-    'https://dc907dsvybtiecmv.public.blob.vercel-storage.com/1725443845929-We6vgb7qjAMSLijQ42Z2TE0a6gBX4M.png',
+    'https://hugart.s3.ap-southeast-2.amazonaws.com/1728913676490.png?t=1728914043528&w=1080&q=75',
+    'https://hugart.s3.ap-southeast-2.amazonaws.com/1728913925987.png?t=1728914043528&w=1080&q=75',
   ];
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);

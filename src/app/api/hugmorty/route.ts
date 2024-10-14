@@ -4,8 +4,9 @@ import { drizzle } from "drizzle-orm/neon-http";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { characterTable, generatedTable } from "../../../../database/schema";
-import { put } from "@vercel/blob";
 import { auth } from '@clerk/nextjs/server'
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 const sql = neon(process.env.DATABASE_URL!);
 const db = drizzle(sql);
@@ -25,6 +26,14 @@ interface BlobResponse {
   contentDisposition?: string;
 }
 const hf = new HfInference(process.env.HF_ACCESS_TOKEN);
+
+const s3Client = new S3Client({
+  region: process.env.AWS_REGION,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+  },
+});
 
 export async function POST(request: Request): Promise<NextResponse> {
   try {
@@ -68,9 +77,18 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     const fileName = `${Date.now()}.png`;
 
-    const blob: BlobResponse = await put(fileName, buff, {
-      access: "public",
+    const putObjectCommand = new PutObjectCommand({
+      Bucket: process.env.AWS_S3_BUCKET_NAME,
+      Key: fileName,
+      Body: buff,
+      ContentType: 'image/png',
     });
+
+    await s3Client.send(putObjectCommand);
+
+    // Construct the public URL
+    const publicUrl = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileName}`;
+    //const publicUrl = "test.com"
 
     if (!userId) {
       return new NextResponse('Unauthorized', { status: 401 })
@@ -79,16 +97,24 @@ export async function POST(request: Request): Promise<NextResponse> {
     await db.insert(generatedTable).values({
       userId: userId,
       sentence: sentence + " " + imgdescribe + " " + results,
-      url: blob.url,
+      url: publicUrl,
       imgdescribe: imgclas.generated_text,
       charId: id,
       
     });
 
+    console.log({
+      sentence: sentence + " " + imgdescribe + " " + results,
+      userId: userId,
+      url: publicUrl,
+      imgdescribe: imgclas.generated_text,
+      charId: id,
+    })
+
     return NextResponse.json({
       sentence: sentence + " " + imgdescribe + " " + results,
       userId: userId,
-      url: blob.url,
+      url: publicUrl,
       imgdescribe: imgclas.generated_text,
       charId: id,
     });
